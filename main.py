@@ -2,6 +2,7 @@ import WordExtractor
 import WordDefAPI
 import nltk
 from nltk.corpus import wordnet as wn
+from difflib import get_close_matches
 
 def main():
     nltk.download('wordnet')
@@ -17,13 +18,21 @@ def main():
             print("word:")
             print(w['word'])
             print("similar words:")
-            possible_other(w['word'])
+            print(possible_root(w['word']))
 
-def possible_other(word):
+#Inspo: https://stackoverflow.com/a/17279278
+def possible_root(word):
+    possible = []
     for ss in wn.synsets(word):
         for lemma in ss.lemmas():
-            for word in lemma.derivationally_related_forms():
-                print(word.name())
+            for w in lemma.derivationally_related_forms():
+                possible.append(w.name())
+            for ps in lemma.pertainyms():
+                possible.append(ps.name())
+    matches = get_close_matches(word, possible)
+    if len(matches) > 0:
+        return matches[0]
+    return None
     
 
 if __name__=='__main__':
