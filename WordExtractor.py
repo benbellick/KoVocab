@@ -1,6 +1,7 @@
 import sqlite3
 import re
 from datetime import datetime
+from nltk.stem import WordNetLemmatizer
 
 class WordExtractor:
     """This is a simple class to extract vocab word information from a Kobo eReader"""
@@ -8,6 +9,7 @@ class WordExtractor:
     def __init__(self, dbPath):
         self.dbPath = dbPath
         self.con = sqlite3.connect(dbPath)
+        self.lemmatizer = WordNetLemmatizer()
 
     def get_all_word_data(self):
         sqlStatement = "SELECT * FROM WordList;"
@@ -17,8 +19,10 @@ class WordExtractor:
         reg = re.compile("[^a-zA-Z]$")
         author, title = self._extract_author_book(word_data[1])
         #We strip last non-alphanumeric char (e.g. ;,') and lowercase
+        word = reg.sub('', word_data[0]).lower()
+        #Also lemmatize word so API works
         return {
-            "word": reg.sub('', word_data[0]).lower(),
+            "word": self.lemmatizer.lemmatize(word, 'a'),
             "title": title,
             "author": author,
             "language": word_data[2],
