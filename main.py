@@ -1,4 +1,4 @@
-import WordExtractor
+from WordExtractor import WordExtractor
 import WordDefAPI
 import nltk
 from nltk.corpus import wordnet as wn
@@ -9,16 +9,23 @@ def main():
     nltk.download('omw-1.4')
     print('hello')
     db_loc = '../kobo_clone/KoboReader.sqlite'
-    we = WordExtractor.WordExtractor(db_loc)
+    we = WordExtractor(db_loc)
     wda = WordDefAPI.WordDefAPI()
-    word_data = we.get_all_word_data()
+    word_dict_list = we.get_all_word_data()
+    num = 0
     for w in word_data:
         result = wda.get_word_info(w['word'])
         if(len(result) == 3):
+            '''
             print("word:")
             print(w['word'])
             print("similar words:")
-            print(possible_root(w['word']))
+            '''
+            pos = possible_root(w['word'])
+            if pos is None:
+                num = num + 1
+    print("num of problems")
+    print(num)
 
 #Inspo: https://stackoverflow.com/a/17279278
 def possible_root(word):
