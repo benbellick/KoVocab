@@ -3,6 +3,7 @@ import re
 import nltk
 from nltk.corpus import wordnet as wn
 from difflib import get_close_matches
+
 class WordData:
     # Install relevant NLTK data
     try:
@@ -61,3 +62,4 @@ class WordData:
         else:
             #TODO handle error condition
             return
+
