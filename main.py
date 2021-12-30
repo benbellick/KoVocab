@@ -1,46 +1,20 @@
 from WordExtractor import WordExtractor
-import WordDefAPI
+from WordDefAPI import WordDefAPI 
 import nltk
 from nltk.corpus import wordnet as wn
 from difflib import get_close_matches
+from WordData import WordData
 
 def main():
-    nltk.download('wordnet')
-    nltk.download('omw-1.4')
-    print('hello')
     db_loc = '../kobo_clone/KoboReader.sqlite'
     we = WordExtractor(db_loc)
-    wda = WordDefAPI.WordDefAPI()
     word_dict_list = we.get_all_word_data()
-    num = 0
-    for w in word_data:
-        result = wda.get_word_info(w['word'])
-        if(len(result) == 3):
-            '''
-            print("word:")
-            print(w['word'])
-            print("similar words:")
-            '''
-            pos = possible_root(w['word'])
-            if pos is None:
-                num = num + 1
-    print("num of problems")
-    print(num)
-
-#Inspo: https://stackoverflow.com/a/17279278
-def possible_root(word):
-    possible = []
-    for ss in wn.synsets(word):
-        for lemma in ss.lemmas():
-            for w in lemma.derivationally_related_forms():
-                possible.append(w.name())
-            for ps in lemma.pertainyms():
-                possible.append(ps.name())
-    matches = get_close_matches(word, possible)
-    if len(matches) > 0:
-        return matches[0]
-    return None
-    
-
+    word_data_list =[WordData(w) for w in word_dict_list]
+    for w in word_data_list:
+        if (WordDefAPI.get_word_info(w, [
+            w.recovery_lemmatize,
+            w.recovery_unpluralize
+        ]) is None):
+            print(w.word)
 if __name__=='__main__':
     main()
