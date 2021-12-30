@@ -2,7 +2,7 @@ import sqlite3
 import re
 from datetime import datetime
 
-class WordExtractor:
+class KoboBackend:
     """ This is a simple class to extract vocab word information from a Kobo eReader into
         a standard python dictionary
     """

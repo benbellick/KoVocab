@@ -1,4 +1,4 @@
-from WordExtractor import WordExtractor
+from KoboBackend import KoboBackend
 from WordDefAPI import WordDefAPI 
 import nltk
 from nltk.corpus import wordnet as wn
@@ -7,7 +7,7 @@ from WordData import WordData
 
 def main():
     db_loc = '../kobo_clone/KoboReader.sqlite'
-    we = WordExtractor(db_loc)
+    we = KoboBackend(db_loc)
     word_dict_list = we.get_all_word_data()
     word_data_list =[WordData(w) for w in word_dict_list]
     get_word_info = lambda word: WordDefAPI.get_word_info(word, [

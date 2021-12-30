@@ -38,7 +38,7 @@ class WordData:
     def _extract_author_book(self, location):
         parts = location.split(' - ')
         if len(parts) != 2:
-            raise Exception("WordExtractor: Author and Title could not be split into 2 by -")
+            raise Exception("WordData: Author and Title could not be split into 2 by -")
         self.author = parts[0].split('/')[-1]
         self.title = parts[1].split('.')[0]
 
