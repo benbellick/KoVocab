@@ -12,14 +12,16 @@ class WordDefAPI:
         if(status_code == 200):
             json_response = json.loads(response.text)[0]
             word.phonetic = json_response['phonetic']
-            word.audio = json_response['phonetics'][0]['audio']
+            word.audio_url = json_response['phonetics'][0]['audio']
+            if 'origin' in json_response:
+                word.origin = json_response['origin']
             #TODO: Perhaps expand out this to not be dict
             word.meanings =json_response['meanings']
-            word.success = True
+            word.def_api_success = True
             return True
         if(len(recovery_fns) == 0):
             #TODO: Need to clarify error here somehow
-            word.success = False
+            word.def_api_success = False
             return False
         recovery_fns.pop(0)()
         return cls.get_word_info(word, recovery_fns)

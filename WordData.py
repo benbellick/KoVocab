@@ -7,11 +7,11 @@ from difflib import get_close_matches
 class WordData:
     # Install relevant NLTK data
     try:
-        nltk.data.find('wordnet')
+        nltk.data.find('corpora/wordnet')
     except LookupError:
         nltk.download('wordnet')
     try:
-        nltk.data.find('omw-1.4')
+        nltk.data.find('corpora/omw-1.4')
     except LookupError:
         nltk.download('omw-1.4')
 
@@ -32,15 +32,18 @@ class WordData:
         
         self.date = datetime.strptime(self.data_dict['date'], '%Y-%m-%dT%H:%M:%SZ')
 
-        self.definition = None
-        self.example = None
+        #These are loaded in by WordDefAPI
+        self.phonetic = ""
+        self.audio_url = ""
+        self.meanings = ""
+        self.origin = ""
 
     def _extract_author_book(self, location):
         parts = location.split(' - ')
         if len(parts) != 2:
             raise Exception("WordData: Author and Title could not be split into 2 by -")
         self.author = parts[0].split('/')[-1]
-        self.title = parts[1].split('.')[0]
+        self.book = parts[1].split('.')[0]
 
     #Inspo: https://stackoverflow.com/a/17279278
     def recovery_lemmatize(self):
@@ -57,7 +60,7 @@ class WordData:
         return None
 
     def recovery_unpluralize(self):
-        if self.word[-1] is 's':
+        if self.word[-1] == 's':
             self.word = self.word[:-1]
         else:
             #TODO handle error condition
