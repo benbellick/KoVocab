@@ -5,9 +5,13 @@ from nltk.corpus import wordnet as wn
 from difflib import get_close_matches
 from WordData import WordData
 from AnkiAPI import AnkiAPI
+import sys
+
 
 def main():
-    db_loc = '../kobo_clone/KoboReader.sqlite'
+    if len(sys.argv) != 2:
+        print("Improper usage: Use main.py [path_to_db]")
+    db_loc = sys.argv[1]
     kobo = KoboBackend(db_loc)
     word_dict_list = kobo.get_all_word_data()
     word_data_list =[WordData(w) for w in word_dict_list]
@@ -27,6 +31,7 @@ def main():
     remaining_words = [word["word"] for word in kobo.get_all_word_data()]
     print("The following words failed for some reason and remain on the Kobo WordList")
     print(remaining_words)
+    kobo.close()
     
     
 if __name__=='__main__':

@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 from shutil import copyfile
 from functools import reduce
+from os.path import exists
 
 class KoboBackend:
     """ This is a simple class to extract vocab word information from a Kobo eReader into
@@ -22,9 +23,17 @@ class KoboBackend:
                 This is so that any destructive operations are not permanent. Defaults to True.
         """
         self.db_path = db_path
+        if not exists(self.db_path) :
+            raise ValueError("Provided path to db that does not exist!")
         self.con = sqlite3.connect(db_path)
         if(create_back_up):
             copyfile(db_path, db_path + ".bak")
+
+    def close(self):
+        """
+        Close the db connection. Must be called before exiting program."
+        """
+        self.con.close()
 
     def get_all_word_data(self):
         """
@@ -52,5 +61,6 @@ class KoboBackend:
         #reduce turns ["one", "two"] -> "('one', 'two')" for sql querry
         sql_word_list = reduce(lambda lst, new_word: lst + "'" + new_word + "', ", words, "(")[:-2] + ")"
         sqlStatement = "DELETE FROM WordList WHERE text in " + sql_word_list + ";"
-        return self.con.execute(sqlStatement)
+        self.con.execute(sqlStatement)
+        self.con.commit()
 
