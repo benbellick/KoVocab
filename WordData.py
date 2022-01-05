@@ -99,3 +99,12 @@ class WordData:
             #TODO handle error condition
             return
 
+    def recovery_user_guess(self):
+        """
+        This function is a last ditch resort, where the user actually enters in their own interpretation of the form of the word which
+        the API will work for.
+        """
+        print("Could not find form for " +  self.raw_word + " which produced a definition from the API.");
+        self.word = input("Enter guess here: ")
+
+

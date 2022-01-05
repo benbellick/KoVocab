@@ -13,7 +13,8 @@ def main():
     word_data_list =[WordData(w) for w in word_dict_list]
     get_word_info = lambda word: WordDefAPI.get_word_info(word, [
         word.recovery_lemmatize,
-        word.recovery_unpluralize
+        word.recovery_unpluralize,
+        word.recovery_user_guess
     ])
     word_def_success_list = list(filter(get_word_info, word_data_list))
     AnkiAPI.add_notes(word_def_success_list)

@@ -9,15 +9,15 @@ class WordDefAPI:
         
     @classmethod
     def get_word_info(cls, word, recovery_fns):
-    """
-    A function to retrieve all word info (definitions, origin, audio, etc.) from the API.
+        """
+        A function to retrieve all word info (definitions, origin, audio, etc.) from the API.
 
-    Parameters:
-        word (string): The word to search for
-        recovery_fns (func[]): These functions serve as 'backups' in case the querry of the API fails. 
-            If it does fail, a function from recovery_fns is called (presumably to alter the word attribute), and 
-            the API is tried again. This is repeated until either a querry succeeds, or there are no more recovery_fns, in which case we have failed.
-    """
+        Parameters:
+            word (string): The word to search for
+            recovery_fns (func[]): These functions serve as 'backups' in case the querry of the API fails. 
+                If it does fail, a function from recovery_fns is called (presumably to alter the word attribute), and 
+                the API is tried again. This is repeated until either a querry succeeds, or there are no more recovery_fns, in which case we have failed.
+        """
         url = cls.api_url + word.word
         response = requests.get(url)
         status_code = response.status_code
