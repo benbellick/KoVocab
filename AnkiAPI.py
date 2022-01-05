@@ -3,8 +3,23 @@ import json
 from datetime import datetime
 
 class AnkiAPI:
+    """
+    This is a class to interact with Anki via the AnkiConnect web server.
+
+    All methods are classmethods, so the class itself need not be instantiated.
+    """
     @classmethod
     def add_notes(cls, word_data_lst):
+        """
+        A function to add notes to the English Vocab deck in Anki.
+
+        Parameters:
+            word_data_lst (WordData[]): A list of WordData, as defined in the WordData module.
+                It is assumed that the appropriate data has been loaded in already via the definition API.
+
+        Returns:
+            void
+        """
         notes = list(map(cls._word_data_to_anki, word_data_lst))
         base_req = {
             'action': "addNotes",
