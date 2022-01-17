@@ -1,4 +1,5 @@
 import requests
+from requests import ConnectionError
 import json
 from datetime import datetime
 
@@ -28,7 +29,10 @@ class AnkiAPI:
                 "notes":  notes
             }
         }
-        response = requests.post('http://localhost:8765', json.dumps(base_req))
+        try:
+            response = requests.post('http://localhost:8765', json.dumps(base_req))
+        except ConnectionError: 
+            raise Exception("Error: Could not connect to anki api. Is anki running with anki connect?")
         #Look into failures
         for i, resp_code in enumerate(json.loads(response.text)["result"]):
             if resp_code is None:

@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import Timeout
 import json
 
 class WordDefAPI:
@@ -19,19 +20,23 @@ class WordDefAPI:
                 the API is tried again. This is repeated until either a querry succeeds, or there are no more recovery_fns, in which case we have failed.
         """
         url = cls.api_url + word.word
-        response = requests.get(url)
-        status_code = response.status_code
-        if(status_code == 200):
-            json_response = json.loads(response.text)[0]
-            word.phonetic = json_response['phonetic']
-            word.audio_url = json_response['phonetics'][0]['audio']
-            if 'origin' in json_response:
-                word.origin = json_response['origin']
-            word.meanings =json_response['meanings']
-            word.def_api_success = True
-            return True
-        if(len(recovery_fns) == 0):
-            word.def_api_success = False
-            return False
-        recovery_fns.pop(0)()
-        return cls.get_word_info(word, recovery_fns)
+        try:
+            response = requests.get(url, timeout=10)
+        except Timeout:
+            raise Exception("Error: WordDefAPI request timed out. Perhaps the api is down.")
+        else:
+            status_code = response.status_code
+            if(status_code == 200):
+                json_response = json.loads(response.text)[0]
+                word.phonetic = json_response['phonetic']
+                word.audio_url = json_response['phonetics'][0]['audio']
+                if 'origin' in json_response:
+                    word.origin = json_response['origin']
+                word.meanings =json_response['meanings']
+                word.def_api_success = True
+                return True
+            if(len(recovery_fns) == 0):
+                word.def_api_success = False
+                return False
+            recovery_fns.pop(0)()
+            return cls.get_word_info(word, recovery_fns)
